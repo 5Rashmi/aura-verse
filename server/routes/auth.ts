@@ -5,36 +5,44 @@ import User from "../models/User";
 import mongoose from "mongoose";
 import { authenticate } from "../middleware/authenticate";
 import { authorizeUser } from "../middleware/authorizeUser";
+import "@dotenvx/dotenvx/config";
+import { sendEmail } from "../utils/sendEmail";
 
 const router: Router = express.Router();
 
-router.post("/register", async (req, res) => {
-    try {
-        const { username, password, name, description, avatar } = req.body;
+const CLIENT_URL = process.env.CLIENT_URL;
 
-        const existingUser = await User.findOne({username: username.trim()});
+router.post("/register", async (req, res) => {
+    console.log("Incoming register data:", req.body);
+
+    try {
+        const { email, password, name, description, avatar } = req.body;
+
+        const existingUser = await User.findOne({email: email.trim()});
         if (existingUser) {
             res.status(400).json({ error: "User already exists"});
+            return;
         }
         
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         
-        const newUser = new User({ username: username.trim(), password: hashedPassword, name: name.trim(), description: description?.trim().slice(0, 250), avatar: avatar?.trim()});
+        const newUser = new User({ email: email.trim(), password: hashedPassword, name: name.trim(), description: description?.trim().slice(0, 250), avatar: avatar?.trim()});
         await newUser.save();
 
         console.log("User saved:", newUser);
         res.status(201).json({ message: "User registered successfully"});
-    } catch (error) {
-        res.status(500).json({ error: "Registration failed"});
+    } catch (error: any) {
+        console.error("Registration Error:", error);
+  res.status(500).json({ error: error.message || "Registration failed" });
     }
 });
 
 router.post("/login", async (req, res): Promise<void> => {
     try {
-        const {username, password} = req.body;
+        const {email, password} = req.body;
         
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
             res.status(401).json({ error: "Invalid credentials" });
             return; 
@@ -58,9 +66,9 @@ router.post("/login", async (req, res): Promise<void> => {
 
 router.put("/update/:id", authenticate, authorizeUser, async (req, res): Promise<void> => {
     try {
-        const { username, password, name, description, avatar } = req.body;
+        const { email, password, name, description, avatar } = req.body;
         const updateFields: any = {};
-        if (username) updateFields.username = username.trim();
+        if (email) updateFields.email = email.trim();
         if (name) updateFields.name = name.trim();
         if (description) updateFields.description = description.trim().slice(0, 250);
         if (avatar) updateFields.avatar = avatar.trim();
@@ -113,6 +121,56 @@ router.get("/me", authenticate, authorizeUser, async (req, res): Promise<void> =
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch profile"});
+    }
+});
+
+router.post("/forgot-password", async (req, res): Promise<void> => {
+    const {email} = req.body;
+    try {
+        const user = await User.findOne({ email: email.trim() });
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+            expiresIn: "15m",
+        });
+
+        const resetLink = `${CLIENT_URL}/reset-password/${resetToken}`;
+
+        await sendEmail({
+            to: email,
+            subject: "Reset your password",
+            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 15 minutes.</p>`,
+        });
+        
+        res.json({ message: "Password reset link sent to email"});
+    } catch (error) {
+        res.status(500).json({error: "Something went wrong"});
+    }
+});
+
+router.post("/reset-password/:token", async (req, res): Promise<void> => {
+    const {token} = req.params;
+    const {password} = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            res.status(400).json({ error: "Invalid user"});
+            return;
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ message: "Password reset successful"});
+    } catch (error) {
+        res.status(400).json({ error: "Invalid or expired token"});
     }
 })
 

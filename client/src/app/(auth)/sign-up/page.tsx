@@ -6,6 +6,7 @@ import Textarea from "@/components/ui/auth/Textarea";
 import Toast from "@/components/ui/Toast";
 import { UserType } from "@/types/User";
 import config from "@/utils/config";
+import { isValidEmail, validatePassword } from "@/utils/validation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -14,7 +15,7 @@ import { FiUser, FiLock, FiUserCheck, FiFileText } from "react-icons/fi";
 
 const SignUp = () => {
   const [form, setForm] = useState<UserType>({
-    username: "",
+    email: "",
     password: "",
     name: "",
     description: "",
@@ -36,9 +37,19 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const error = validatePassword(form.password);
+    if (!isValidEmail(form.email)) {
+      toast.error("Invalid email format");
+      return;
+    }
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
     try {
-      const res = await axios.post(config.URL.auth.signup, form);
-      console.log(res.data);
+      await axios.post(config.URL.auth.signup, form);
       router.push("/");
     } catch (error: unknown) {
       console.error("Error signing up", error);
@@ -59,14 +70,15 @@ const SignUp = () => {
           name: "Sign Up",
           fullWidth: true,
         }}
+        noValidate
       >
         <Heading heading="Create an account" />
         <div>
           <Input
-            type="text"
-            name="username"
-            value={form.username}
-            label="Username"
+            type="email"
+            name="email"
+            value={form.email}
+            label="Email"
             icon={<FiUser />}
             onChange={onChange}
             required

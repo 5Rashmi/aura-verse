@@ -5,6 +5,8 @@ const config = {
         auth: {
             signup: `${BASE_URL}/api/auth/register`,
             signin: `${BASE_URL}/api/auth/login`,
+            forgotPassword: `${BASE_URL}/api/auth/forgot-password`,
+            resetPassword: `${BASE_URL}/api/auth/reset-password`,
         },
     }
 }

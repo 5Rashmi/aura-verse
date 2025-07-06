@@ -7,11 +7,19 @@ type FormProps = {
   children: React.ReactNode;
   className?: string;
   buttonProps: ButtonProps;
+  noValidate?: boolean;
 };
-const Form = ({ onSubmit, children, className, buttonProps }: FormProps) => {
+const Form = ({
+  onSubmit,
+  children,
+  className,
+  buttonProps,
+  noValidate,
+}: FormProps) => {
   return (
     <form
       onSubmit={onSubmit}
+      noValidate={noValidate}
       className={`bg-card dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 
   p-8 rounded-2xl shadow-xl mt-5 max-w-md mx-auto space-y-6 
   text-card-foreground
