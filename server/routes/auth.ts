@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../models/User";
 import mongoose from "mongoose";
 import { authenticate } from "../middleware/authenticate";
@@ -8,13 +8,17 @@ import { authorizeUser } from "../middleware/authorizeUser";
 import "@dotenvx/dotenvx/config";
 import { sendEmail } from "../utils/sendEmail";
 
+interface MyPayload extends JwtPayload {
+  id: string;
+}
+
 const router: Router = express.Router();
 
 const CLIENT_URL = process.env.CLIENT_URL;
+const ACCESS_SECRET = process.env.ACCESS_SECRET!;
+const REFRESH_SECRET = process.env.REFRESH_SECRET!;
 
 router.post("/register", async (req, res) => {
-    console.log("Incoming register data:", req.body);
-
     try {
         const { email, password, name, description, avatar } = req.body;
 
@@ -26,12 +30,35 @@ router.post("/register", async (req, res) => {
         
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        
-        const newUser = new User({ email: email.trim(), password: hashedPassword, name: name.trim(), description: description?.trim().slice(0, 250), avatar: avatar?.trim()});
-        await newUser.save();
 
-        console.log("User saved:", newUser);
-        res.status(201).json({ message: "User registered successfully"});
+        const finalAvatar =
+        avatar && avatar.trim() !== ""
+            ? avatar.trim()
+            : `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()
+                .toString(36)
+                .substring(7)}`;
+
+
+        const newUser = new User({ email: email.trim(), password: hashedPassword, name: name.trim(), description: description?.trim().slice(0, 250), avatar: finalAvatar});
+        await newUser.save();const accessToken = jwt.sign({ id: newUser._id }, process.env.ACCESS_SECRET!, {
+      expiresIn: "15m",
+    });
+
+    const refreshToken = jwt.sign({ id: newUser._id }, process.env.REFRESH_SECRET!, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token: accessToken,
+    });
     } catch (error: any) {
         console.error("Registration Error:", error);
   res.status(500).json({ error: error.message || "Registration failed" });
@@ -43,6 +70,7 @@ router.post("/login", async (req, res): Promise<void> => {
         const {email, password} = req.body;
         
         const user = await User.findOne({ email });
+        
         if (!user) {
             res.status(401).json({ error: "Invalid credentials" });
             return; 
@@ -54,11 +82,22 @@ router.post("/login", async (req, res): Promise<void> => {
             return; 
         };
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
-            expiresIn: '1h',
-        });
+        const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_SECRET!, {
+      expiresIn: "15m",
+    });
+
+    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_SECRET!, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
         
-        res.json({ token });
+        res.status(200).json({ token: accessToken });
     } catch (error) {
         res.status(500).json({ error: "Login failed" });
     }
@@ -171,6 +210,22 @@ router.post("/reset-password/:token", async (req, res): Promise<void> => {
         res.json({ message: "Password reset successful"});
     } catch (error) {
         res.status(400).json({ error: "Invalid or expired token"});
+    }
+});
+
+router.post("/refresh-token", async(req, res): Promise<void> => {
+    const token = req.cookies?.refreshToken;
+    if (!token) {
+        res.status(401).json({ error: "No refresh token"});;
+        return;
+    }
+
+    try {
+        const decoded = jwt.verify(token, REFRESH_SECRET) as MyPayload;
+        const newAccessToken = jwt.sign({ id: decoded.id}, ACCESS_SECRET, {expiresIn: "15m"});
+        res.json({ accessToken: newAccessToken });
+    } catch (error) {
+        res.status(403).json({ error: "Invalid refresh token"});
     }
 })
 

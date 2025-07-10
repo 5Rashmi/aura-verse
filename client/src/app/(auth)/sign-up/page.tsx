@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FiUser, FiLock, FiUserCheck, FiFileText } from "react-icons/fi";
+import { setCookie } from "@/utils/cookies";
 
 const SignUp = () => {
   const [form, setForm] = useState<UserType>({
@@ -49,7 +50,9 @@ const SignUp = () => {
     }
 
     try {
-      await axios.post(config.URL.auth.signup, form);
+      const res = await axios.post(config.URL.auth.signup, form);
+      setCookie({ name: "token", value: res.data.token });
+
       router.push("/");
     } catch (error: unknown) {
       console.error("Error signing up", error);
@@ -116,7 +119,7 @@ const SignUp = () => {
           />
         </div>
       </Form>
-      <p className="text-sm text-center text-zinc-600 dark:text-zinc-400 mt-4">
+      <p className="text-sm text-center text-zinc-400 mt-4">
         Already have an account?{" "}
         <a
           href="/sign-in"

@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/bg/dark-sky.webp')] bg-cover bg-center`}
       >
         {loading ? (
           <div className="min-h-screen w-full flex items-center justify-center">

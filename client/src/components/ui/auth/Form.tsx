@@ -20,11 +20,7 @@ const Form = ({
     <form
       onSubmit={onSubmit}
       noValidate={noValidate}
-      className={`bg-card dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 
-  p-8 rounded-2xl shadow-xl mt-5 max-w-md mx-auto space-y-6 
-  text-card-foreground
-  border border-zinc-300 dark:border-zinc-700 
-  transition-all duration-300 ease-in-out hover:shadow-2xl ${className}`}
+      className={`glass-container ${className}`}
     >
       {children}
       <Button {...buttonProps} />
