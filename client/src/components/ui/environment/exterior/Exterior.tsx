@@ -10,16 +10,16 @@ const Exterior = () => {
         <Link
           key={key}
           href={value.link}
-          className="absolute"
+          className="absolute flex flex-col items-center"
           style={{ top: value.position.top, left: value.position.left }}
         >
           <Image
             src={value.src}
             alt={key}
             title={key}
-            width={160}
-            height={160}
-            className="transition-transform hover:scale-110"
+            width={250}
+            height={250}
+            className="transition-transform hover:scale-110 mb-0"
           />
         </Link>
       ))}

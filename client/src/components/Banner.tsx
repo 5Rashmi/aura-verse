@@ -9,40 +9,42 @@ export default function CreativeBanner({
   scrollToGlobe: () => void;
 }) {
   return (
-    <section className="relative w-full h-[90vh] flex flex-col items-center justify-center text-white overflow-hidden">
-      {/* Animated Stars Background */}
-      <div className="absolute inset-0 bg-[url('/stars-bg.jpg')] bg-cover bg-center z-0" />
+    <section className="relative w-full h-[90vh] flex flex-col justify-center items-center text-white overflow-hidden">
+      {/* Overlay for background blur */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0" />
 
-      {/* Overlay + Blur */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-10" />
-
-      {/* Lottie Meditation Animation */}
+      {/* Lottie Animation - Larger, centered */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1 }}
-        className="z-20 w-[300px] sm:w-[400px]"
+        className="z-10 w-[300px] sm:w-[450px] max-h-[300px] sm:max-h-[400px] overflow-hidden"
       >
         <Lottie animationData={emojiAnim} loop autoplay />
       </motion.div>
 
-      {/* Tagline */}
+      {/* Title */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        className="z-20 text-3xl sm:text-4xl font-semibold mt-6 bg-gradient-to-r from-teal-300 via-pink-300 to-purple-400 text-transparent bg-clip-text"
+        transition={{ delay: 0.8 }}
+        className="z-10 text-3xl sm:text-4xl font-bold bg-gradient-to-r from-teal-300 via-pink-300 to-purple-400 text-transparent bg-clip-text mt-4"
       >
-        Let your mood shape your world
+        AuraVerse
       </motion.h2>
+
+      {/* Typing Text */}
+      <h2 className="z-10 mt-1 font-mono text-xl sm:text-3xl font-medium typing-text">
+        Let your mood shape your world
+      </h2>
 
       {/* CTA Button */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        transition={{ delay: 1.2 }}
+        transition={{ delay: 1 }}
         onClick={scrollToGlobe}
-        className="z-20 mt-8 px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white text-lg font-medium shadow-lg"
+        className="z-10 mt-6 px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white text-lg font-medium shadow-lg"
       >
         Start Your Journey
       </motion.button>

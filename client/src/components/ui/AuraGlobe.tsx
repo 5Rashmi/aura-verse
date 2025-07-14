@@ -9,7 +9,7 @@ type AuraGlobeType = {
 
 const AuraGlobe = ({ color = "#00ffff", emoji, label }: AuraGlobeType) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div className="flex flex-col items-center justify-center gap-6 mt-15">
       {/* Mood Label */}
       <p
         className="text-2xl font-medium tracking-wide text-white px-6 py-2 rounded-md"
