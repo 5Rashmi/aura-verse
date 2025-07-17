@@ -1,7 +1,99 @@
 text,mood
-"I’m feeling great today!",happy
-"I’m so tired and bored.",sad
-"I love this weather!",happy
-"I feel like giving up.",sad
-"This is exciting!",excited
-"I hate everything.",angry
+"I'm full of joy today!",happy
+"Sunshine always makes me happy.",happy
+"I can’t stop smiling today.",happy
+"I'm beaming with happiness!",happy
+"I'm laughing so much it hurts.",happy
+"I'm feeling blessed and cheerful.",happy
+"Everything just feels right today.",happy
+"I'm humming my favorite tune!",happy
+
+"This movie makes me so emotional.",sad
+"Nobody understands me.",sad
+"I feel like crying for no reason.",sad
+"I'm gloomy and down.",sad
+"I miss how things used to be.",sad
+"I feel empty inside.",sad
+"Why does everything hurt?",sad
+"I just want to be alone.",sad
+
+"Why is everything going wrong?!",angry
+"I'm furious about that comment!",angry
+"I'm clenching my fists in rage.",angry
+"I'm yelling at my screen!",angry
+"I can't believe how unfair this is!",angry
+"This traffic is making me rage.",angry
+"I'm sick of being treated this way!",angry
+"I'm about to explode!",angry
+
+"I’m just sitting and breathing calmly.",calm
+"I'm meditating to stay centered.",calm
+"I'm sipping tea and enjoying silence.",calm
+"I'm breathing slowly, everything's fine.",calm
+"I'm listening to the rain in peace.",calm
+"I'm still and centered.",calm
+"I'm in no rush, just present.",calm
+"I’m floating in stillness.",calm
+
+"My heart is racing thinking about it.",anxious
+"My stomach feels tight with worry.",anxious
+"I'm biting my nails from anxiety.",anxious
+"I'm scared but trying to stay cool.",anxious
+"I can't sit still, I'm nervous.",anxious
+"What if something bad happens?",anxious
+"I feel tension in my chest.",anxious
+"I keep overthinking everything.",anxious
+
+"I’m jumping with excitement!",excited
+"I’m thrilled about this opportunity!",excited
+"I'm bursting with energy!",excited
+"I'm thrilled beyond words!",excited
+"I can't wait to share the news!",excited
+"This is going to be epic!",excited
+"I'm pumped for what's coming!",excited
+"My whole body is buzzing with energy!",excited
+
+"I could sleep for days.",tired
+"I didn’t sleep at all last night.",tired
+"I feel like collapsing.",tired
+"My body is heavy and slow.",tired
+"I'm dragging myself through the day.",tired
+"I need a nap badly.",tired
+"My eyes won’t stay open.",tired
+"I’m running on fumes.",tired
+
+"I'm in the zone, crushing tasks.",focused
+"I’m concentrating hard on this project.",focused
+"My mind is laser-sharp right now.",focused
+"I'm locked in and unstoppable.",focused
+"I'm working with full attention.",focused
+"Nothing can distract me today.",focused
+"I'm flowing through my tasks.",focused
+"My focus is razor-sharp.",focused
+
+"Just vibing with chill music.",relaxed
+"I'm enjoying a quiet evening.",relaxed
+"I'm floating in this peaceful moment.",relaxed
+"I'm chilling by the window.",relaxed
+"I'm stretched out with a book.",relaxed
+"I'm lounging without a care.",relaxed
+"The breeze is putting me at ease.",relaxed
+"My mind feels quiet and soft.",relaxed
+
+"I'm scrolling through my phone aimlessly.",bored
+"This class is so dull.",bored
+"I'm doing nothing, and it’s boring.",bored
+"I'm counting ceiling tiles from boredom.",bored
+"There's nothing to watch.",bored
+"I'm yawning every 5 minutes.",bored
+"This day is dragging on forever.",bored
+"I feel stuck in monotony.",bored
+
+"I'm indifferent to everything right now.",neutral
+"Today feels like any other day.",neutral
+"I'm neither happy nor sad.",neutral
+"I’m just okay, nothing special.",neutral
+"I'm going through the motions.",neutral
+"I'm stable but not excited.",neutral
+"I'm existing, not really living.",neutral
+"Just another regular day.",neutral
