@@ -7,7 +7,6 @@
 
 # AURA-VERSE
 
-d
 <em></em>
 
 <!-- BADGES -->
