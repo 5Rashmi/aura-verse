@@ -13,6 +13,10 @@ const config = {
             update: (id: string) => `${BASE_URL}/api/auth/update/${id}`,
             delete: (id: string) => `${BASE_URL}/api/auth/delete/${id}`,
         },
+        moodAi: {
+            BASE_URL: "https://mood-ai-api.onrender.com",
+            predict: `https://mood-ai-api.onrender.com/predict`,
+        }
     }
 }
 export default config;
